@@ -58,18 +58,25 @@ def update_script(script_filename, new_path):
         lines = list(f)
     if not lines:
         return
-
+    # work only on files with shebang
     if not lines[0].startswith('#!'):
         return
+
     args = lines[0][2:].strip().split()
     if not args:
         return
 
-    if not args[0].endswith('/bin/python') or \
-       '/usr/bin/env python' in args[0]:
+    if args[0].endswith('/bin/python'):
+        command = "python"
+    elif args[0].endswith('/bin/python3'):
+        command = "python3"
+    else:
         return
 
-    new_bin = os.path.join(new_path, 'bin', 'python')
+    if '/usr/bin/env python' in args[0]:
+        return
+
+    new_bin = os.path.join(new_path, 'bin', command)
     if new_bin == args[0]:
         return
 
