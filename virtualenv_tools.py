@@ -54,8 +54,14 @@ def update_activation_script(script_filename, new_path):
 
 def update_script(script_filename, new_path):
     """Updates shebang lines for actual scripts."""
+    lines = []
+
     with open(script_filename) as f:
-        lines = list(f)
+        try:
+            lines = list(f)
+        except UnicodeDecodeError:
+            print('%s skipped' % script_filename)
+
     if not lines:
         return
     # work only on files with shebang
